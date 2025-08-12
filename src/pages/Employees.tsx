@@ -50,7 +50,7 @@ interface HistoryDialogProps { employee?: Employee; open: boolean; onOpenChange:
 function HistoryDialog({ employee, open, onOpenChange }: HistoryDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-md max-h-[70vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Check-in history{employee ? ` – ${employee.fullName}` : ""}</DialogTitle>
         </DialogHeader>
@@ -160,7 +160,7 @@ function AnalyticsDialog({ employee, open, onOpenChange }: AnalyticsDialogProps)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Analytics{employee ? ` – ${employee.fullName}` : ""}</DialogTitle>
         </DialogHeader>
@@ -314,78 +314,66 @@ export default function Employees() {
             }
           </div>
         ) : (
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {filtered.map((e) => (
-              <Card key={e.id} className="bg-card/60 hover-scale cursor-pointer" onClick={() => setSelectedForAnalytics(e)}>
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="size-10 rounded-full bg-primary/15 text-primary grid place-items-center font-semibold">
+              <Card key={e.id} className="bg-card/60 hover-scale cursor-pointer max-w-sm" onClick={() => setSelectedForAnalytics(e)}>
+                <CardHeader className="pb-2 p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="size-8 rounded-full bg-primary/15 text-primary grid place-items-center font-semibold text-sm">
                         {e.fullName?.[0]?.toUpperCase() || "?"}
                       </div>
                       <div>
-                        <CardTitle className="text-base sm:text-lg truncate">{e.fullName}</CardTitle>
-                        <p className="text-xs text-muted-foreground mt-0.5 truncate flex items-center gap-2">
-                          <Briefcase className="h-3.5 w-3.5" />{e.roleTitle}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-0.5 truncate flex items-center gap-2">
-                          <Mail className="h-3.5 w-3.5" />{e.email}
+                        <CardTitle className="text-sm truncate">{e.fullName}</CardTitle>
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate flex items-center gap-1">
+                          <Briefcase className="h-3 w-3" />{e.roleTitle}
                         </p>
                       </div>
                     </div>
-                    <Badge className={statusClass(e.status)}>{e.status}</Badge>
+                    <Badge className={`${statusClass(e.status)} text-xs`}>{e.status}</Badge>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-md border p-3">
-                      <p className="text-muted-foreground">Completed (this month)</p>
-                      <p className="text-xl font-semibold">{e.completedThisMonth}</p>
+                <CardContent className="p-4 pt-0">
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="rounded-md border p-2">
+                      <p className="text-muted-foreground">Completed</p>
+                      <p className="text-lg font-semibold">{e.completedThisMonth}</p>
                     </div>
-                    <div className="rounded-md border p-3">
+                    <div className="rounded-md border p-2">
                       <p className="text-muted-foreground">On Hold</p>
-                      <p className="text-xl font-semibold">{e.onHoldThisMonth}</p>
+                      <p className="text-lg font-semibold">{e.onHoldThisMonth}</p>
                     </div>
                   </div>
 
-                  <Separator className="my-3" />
+                  <Separator className="my-2" />
 
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-md border p-3">
-                      <p className="text-muted-foreground">Work Mode</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="rounded-md border p-2">
+                      <p className="text-muted-foreground">Mode</p>
                       <p className="font-medium">{e.workMode}</p>
                     </div>
-                    <div className="rounded-md border p-3">
+                    <div className="rounded-md border p-2">
                       <p className="text-muted-foreground">Experience</p>
                       <p className="font-medium">{e.yearsExperience} yrs</p>
                     </div>
                   </div>
 
-                  <Separator className="my-3" />
+                  <Separator className="my-2" />
 
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">Last check-in</span>
-                        <span className="font-medium">
-                          {(() => {
-                            const r = e.checkIns?.[e.checkIns.length - 1];
-                            return r ? `${new Date(r.date).toLocaleDateString()} · ${r.checkIn}` : "—";
-                          })()}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Current</span>
-                        <span
-                          className="inline-block size-2 rounded-full"
-                          style={{ backgroundColor: e.status === "On Duty" ? "hsl(var(--status-on-hold))" : e.status === "Not Busy (At Work)" ? "hsl(var(--status-active))" : "hsl(var(--muted-foreground))" }}
-                        />
-                        <span className="font-medium">
-                          {e.status === "On Duty" ? "Busy" : e.status === "Not Busy (At Work)" ? "Break" : "Absent"}
-                        </span>
-                      </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-muted-foreground">Last check-in</span>
                     </div>
+                    <span className="font-medium">
+                      {(() => {
+                        const r = e.checkIns?.[e.checkIns.length - 1];
+                        return r ? `${new Date(r.date).toLocaleDateString()} · ${r.checkIn}` : "—";
+                      })()}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mt-2">
                     <Button variant="secondary" size="sm" onClick={(ev) => { ev.stopPropagation(); setSelectedForHistory(e); }}>History</Button>
                   </div>
                 </CardContent>

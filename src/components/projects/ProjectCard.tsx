@@ -56,38 +56,38 @@ const ProjectCard = ({ project, client, onUpdate }: ProjectCardProps) => {
 
   return (
     <>
-      <Card className="project-card cursor-pointer" onClick={() => setShowDetail(true)}>
-        <CardHeader className="pb-3">
+      <Card className="project-card cursor-pointer max-w-sm" onClick={() => setShowDetail(true)}>
+        <CardHeader className="pb-2 p-4">
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-lg truncate mb-1">{project.name}</h3>
-              <p className="text-sm text-muted-foreground truncate">
+              <h3 className="font-semibold text-base truncate mb-1">{project.name}</h3>
+              <p className="text-xs text-muted-foreground truncate">
                 {project.description || "No description"}
               </p>
             </div>
-            <Badge className={`ml-2 ${getStatusColor(project.status)}`}>
+            <Badge className={`ml-2 text-xs ${getStatusColor(project.status)}`}>
               {getStatusDisplayName(project.status)}
             </Badge>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 p-4 pt-0">
           {/* Client Info */}
-          <div className="flex items-center gap-2 text-sm">
-            <User className="w-4 h-4 text-muted-foreground" />
+          <div className="flex items-center gap-2 text-xs">
+            <User className="w-3 h-3 text-muted-foreground" />
             <span className="truncate">
               {client ? `${client.name}${client.company ? ` (${client.company})` : ''}` : 'Unknown Client'}
             </span>
           </div>
 
           {/* Budget and Deadline */}
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="space-y-1">
-              <div className="text-muted-foreground text-xs">Budget</div>
+              <div className="text-muted-foreground">Budget</div>
               <div className="font-medium">{project.budget.toLocaleString()} MAD</div>
             </div>
             <div className="space-y-1">
-              <div className="text-muted-foreground text-xs">Deadline</div>
+              <div className="text-muted-foreground">Deadline</div>
               <div className={`font-medium ${isOverdue ? 'text-red-600' : ''}`}>
                 {formatDate(project.deadline)}
                 {daysLeft !== null && daysLeft >= 0 && (
@@ -104,13 +104,13 @@ const ProjectCard = ({ project, client, onUpdate }: ProjectCardProps) => {
 
           {/* Payment Progress */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex justify-between items-center text-xs">
               <span className="text-muted-foreground">Payment Progress</span>
               <span className="font-medium">
                 {project.totalPaid.toLocaleString()} / {project.budget.toLocaleString()} MAD
               </span>
             </div>
-            <Progress value={paymentProgress} className="h-2" />
+            <Progress value={paymentProgress} className="h-1.5" />
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>{project.payments.length} payments</span>
               <span>{remaining.toLocaleString()} MAD remaining</span>

@@ -3,49 +3,49 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recha
 
 const data = [
   { 
-    name: "Jan", 
+    name: "Week 1", 
     completed: 40, 
     active: 30, 
     onHold: 30,
     total: 100
   },
   { 
-    name: "Feb", 
+    name: "Week 2", 
     completed: 50, 
     active: 25, 
     onHold: 25,
     total: 100
   },
   { 
-    name: "Mar", 
+    name: "Week 3", 
     completed: 60, 
     active: 20, 
     onHold: 20,
     total: 100
   },
   { 
-    name: "Apr", 
+    name: "Week 4", 
     completed: 45, 
     active: 35, 
     onHold: 20,
     total: 100
   },
   { 
-    name: "May", 
+    name: "Week 5", 
     completed: 55, 
     active: 25, 
     onHold: 20,
     total: 100
   },
   { 
-    name: "Jun", 
+    name: "Week 6", 
     completed: 65, 
     active: 20, 
     onHold: 15,
     total: 100
   },
   { 
-    name: "Jul", 
+    name: "Week 7", 
     completed: 70, 
     active: 20, 
     onHold: 10,

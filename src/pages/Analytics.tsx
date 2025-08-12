@@ -10,12 +10,12 @@ const employeeData = [
 ];
 
 const performanceData = [
-  { month: "Jan", productivity: 85, satisfaction: 90, efficiency: 88 },
-  { month: "Feb", productivity: 88, satisfaction: 85, efficiency: 92 },
-  { month: "Mar", productivity: 92, satisfaction: 88, efficiency: 90 },
-  { month: "Apr", productivity: 87, satisfaction: 92, efficiency: 85 },
-  { month: "May", productivity: 94, satisfaction: 89, efficiency: 93 },
-  { month: "Jun", productivity: 91, satisfaction: 94, efficiency: 89 }
+  { week: "Week 1", productivity: 85, satisfaction: 90, efficiency: 88 },
+  { week: "Week 2", productivity: 88, satisfaction: 85, efficiency: 92 },
+  { week: "Week 3", productivity: 92, satisfaction: 88, efficiency: 90 },
+  { week: "Week 4", productivity: 87, satisfaction: 92, efficiency: 85 },
+  { week: "Week 5", productivity: 94, satisfaction: 89, efficiency: 93 },
+  { week: "Week 6", productivity: 91, satisfaction: 94, efficiency: 89 }
 ];
 
 const Analytics = () => {
@@ -66,7 +66,7 @@ const Analytics = () => {
                 <h3 className="text-lg font-medium mb-4">Performance Trends</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={performanceData}>
-                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <XAxis dataKey="week" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} domain={[70, 100]} />
                     <Tooltip />
                     <Legend />

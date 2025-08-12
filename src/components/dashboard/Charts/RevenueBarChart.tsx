@@ -1,52 +1,82 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bar } from "react-chartjs-2";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Revenue ($)",
-      data: labels.map(() => Math.floor(Math.random() * 5000) + 1000),
-      backgroundColor: "hsl(222.2 47.6% 11.8% / 0.9)",
-      borderRadius: 6,
-    },
-  ],
-};
-
-const options = {
-  responsive: true,
-  plugins: {
-    legend: { display: false },
-    title: { display: false },
+const data = [
+  { 
+    name: "Jan", 
+    completed: 40, 
+    active: 30, 
+    onHold: 30,
+    total: 100
   },
-  scales: {
-    x: { grid: { display: false } },
-    y: { grid: { color: "hsl(217.2 32.6% 17.5% / 0.6)" } },
+  { 
+    name: "Feb", 
+    completed: 50, 
+    active: 25, 
+    onHold: 25,
+    total: 100
   },
-} as const;
+  { 
+    name: "Mar", 
+    completed: 60, 
+    active: 20, 
+    onHold: 20,
+    total: 100
+  },
+  { 
+    name: "Apr", 
+    completed: 45, 
+    active: 35, 
+    onHold: 20,
+    total: 100
+  },
+  { 
+    name: "May", 
+    completed: 55, 
+    active: 25, 
+    onHold: 20,
+    total: 100
+  },
+  { 
+    name: "Jun", 
+    completed: 65, 
+    active: 20, 
+    onHold: 15,
+    total: 100
+  },
+  { 
+    name: "Jul", 
+    completed: 70, 
+    active: 20, 
+    onHold: 10,
+    total: 100
+  },
+];
 
-export const RevenueBarChart = () => {
+export function RevenueBarChart() {
   return (
     <Card className="hover-scale">
       <CardHeader>
-        <CardTitle>Monthly Revenue</CardTitle>
+        <CardTitle>Monthly Task Analysis</CardTitle>
       </CardHeader>
       <CardContent>
-        <Bar options={options} data={data} />
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data}>
+            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+            <YAxis 
+              tick={{ fontSize: 12 }} 
+              domain={[0, 100]}
+              tickFormatter={(value) => `${value}%`}
+            />
+            <Tooltip 
+              formatter={(value, name) => [`${value}%`, name === 'completed' ? 'Completed' : name === 'active' ? 'Active/Started' : 'On Hold']} 
+            />
+            <Bar dataKey="completed" stackId="tasks" fill="hsl(var(--status-completed))" radius={[0, 0, 0, 0]} />
+            <Bar dataKey="active" stackId="tasks" fill="hsl(var(--status-active))" radius={[0, 0, 0, 0]} />
+            <Bar dataKey="onHold" stackId="tasks" fill="hsl(var(--status-on-hold))" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );
-};
+}

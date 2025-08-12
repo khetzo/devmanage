@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Employee } from "@/types/entities";
 import { Line, LineChart, XAxis, YAxis, ResponsiveContainer, Tooltip as ReTooltip, Legend, PieChart, Pie, Cell, BarChart, Bar } from "recharts";
 import { Calendar, Clock, LogIn, LogOut, Mail, Briefcase } from "lucide-react";
+import AddEmployeeDialog from "@/components/employees/AddEmployeeDialog";
 
 const EMPLOYEES_STORAGE_KEY = "devmanage_employees_v1";
 
@@ -35,7 +38,12 @@ function useEmployees() {
       setEmployees(JSON.parse(raw) as Employee[]);
     } catch {}
   }, []);
-  return { employees };
+  
+  const addEmployee = (employee: Employee) => {
+    setEmployees((prev) => [employee, ...prev]);
+  };
+  
+  return { employees, addEmployee };
 }
 
 interface HistoryDialogProps { employee?: Employee; open: boolean; onOpenChange: (o: boolean) => void; }
@@ -210,9 +218,46 @@ function AnalyticsDialog({ employee, open, onOpenChange }: AnalyticsDialogProps)
 }
 
 export default function Employees() {
-  const { employees } = useEmployees();
+  const { employees, addEmployee } = useEmployees();
   const [selectedForHistory, setSelectedForHistory] = useState<Employee | undefined>();
   const [selectedForAnalytics, setSelectedForAnalytics] = useState<Employee | undefined>();
+  const [openAddEmployee, setOpenAddEmployee] = useState(false);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("All Employees");
+
+  const filtered = useMemo(() => {
+    let result = employees;
+
+    // Filter by role
+    if (filter !== "All Employees") {
+      result = result.filter((employee) => employee.roleTitle.toLowerCase().includes(filter.toLowerCase()));
+    }
+
+    // Search filter
+    const searchQuery = query.toLowerCase().trim();
+    if (searchQuery) {
+      result = result.filter((employee) => 
+        employee.fullName.toLowerCase().includes(searchQuery) ||
+        employee.roleTitle.toLowerCase().includes(searchQuery) ||
+        employee.email.toLowerCase().includes(searchQuery)
+      );
+    }
+
+    return result;
+  }, [employees, filter, query]);
+
+  const stats = useMemo(() => {
+    const total = employees.length;
+    const active = employees.filter(emp => emp.status === "On Duty").length;
+    const onLeave = employees.filter(emp => emp.status === "On Leave" || emp.status === "Off From Work").length;
+    const busy = employees.filter(emp => emp.status === "On Duty").length;
+    return { total, active, onLeave, busy };
+  }, [employees]);
+
+  const roles = useMemo(() => {
+    const uniqueRoles = Array.from(new Set(employees.map(emp => emp.roleTitle)));
+    return uniqueRoles;
+  }, [employees]);
 
   return (
     <>
@@ -223,21 +268,54 @@ export default function Employees() {
       </Helmet>
 
       <header className="mb-6">
-        <h1 className="text-3xl font-bold">Employees</h1>
-        <p className="text-muted-foreground mt-1">Overview of team members and monthly performance</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl font-semibold">Employees</h1>
+            <p className="text-sm text-muted-foreground">Overview of team members and monthly performance</p>
+          </div>
+          <Button onClick={() => setOpenAddEmployee(true)} className="sm:w-auto">
+            + Add Employee
+          </Button>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <div className="text-sm text-muted-foreground">
+            Total: {stats.total} • Active: {stats.active} • On Leave: {stats.onLeave} • Busy: {stats.busy}
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search employees by name, role, or email..."
+            className="sm:w-[400px]"
+          />
+          <Select value={filter} onValueChange={setFilter}>
+            <SelectTrigger className="sm:w-[200px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All Employees">All Employees</SelectItem>
+              {roles.map(role => (
+                <SelectItem key={role} value={role}>{role}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </header>
 
       <main>
-        {employees.length === 0 ? (
-          <Card>
-            <CardHeader><CardTitle>No employees yet</CardTitle></CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Use “Add Employee” on the Dashboard to create profiles.</p>
-            </CardContent>
-          </Card>
+        {filtered.length === 0 ? (
+          <div className="border rounded-lg p-8 text-center text-muted-foreground">
+            {employees.length === 0
+              ? "No employees yet. Add your first employee to get started."
+              : "No employees match your search criteria."
+            }
+          </div>
         ) : (
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {employees.map((e) => (
+            {filtered.map((e) => (
               <Card key={e.id} className="bg-card/60 hover-scale cursor-pointer" onClick={() => setSelectedForAnalytics(e)}>
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-3">
@@ -249,7 +327,8 @@ export default function Employees() {
                         <CardTitle className="text-base sm:text-lg truncate">{e.fullName}</CardTitle>
                         <p className="text-xs text-muted-foreground mt-0.5 truncate flex items-center gap-2">
                           <Briefcase className="h-3.5 w-3.5" />{e.roleTitle}
-                          <span className="mx-1">•</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate flex items-center gap-2">
                           <Mail className="h-3.5 w-3.5" />{e.email}
                         </p>
                       </div>
@@ -316,6 +395,7 @@ export default function Employees() {
         )}
       </main>
 
+      <AddEmployeeDialog open={openAddEmployee} onOpenChange={setOpenAddEmployee} onAdded={addEmployee} />
       <HistoryDialog employee={selectedForHistory} open={!!selectedForHistory} onOpenChange={(o) => !o && setSelectedForHistory(undefined)} />
       <AnalyticsDialog employee={selectedForAnalytics} open={!!selectedForAnalytics} onOpenChange={(o) => !o && setSelectedForAnalytics(undefined)} />
     </>

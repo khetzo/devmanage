@@ -59,11 +59,11 @@ const Index = () => {
       address: data.address,
       projects: []
     };
-    
+
     const updatedClients = [newClient, ...clients];
     setClients(updatedClients);
     saveData(STORAGE_KEYS.CLIENTS, updatedClients);
-    
+
     toast({ title: "Client added", description: `${data.name} from ${data.company}` });
     setOpen(false);
     reset();
@@ -72,7 +72,7 @@ const Index = () => {
   // Initialize data on mount
   useEffect(() => {
     initializeData();
-    
+
     setClients(loadData<Client>(STORAGE_KEYS.CLIENTS));
     setProjects(loadData<Project>(STORAGE_KEYS.PROJECTS));
     setEmployees(loadData<Employee>(STORAGE_KEYS.EMPLOYEES));
@@ -158,7 +158,7 @@ const Index = () => {
           icon={<FontAwesomeIcon icon={faDollarSign} className="text-yellow-500" />}
           className="w-full"
         />
-        
+
         <MetricCard
           title="Monthly Revenue"
           value={formatCurrency(metrics.monthlyRevenue)}
@@ -168,6 +168,7 @@ const Index = () => {
         />
       </section>
 
+      {/* Quick Insights and Weekly Jira Task Analysis//RevenueBarChart  */}
       <section className="grid gap-4 lg:grid-cols-3 mb-6">
         <div className="lg:col-span-2">
           <RevenueBarChart projects={projects} employees={employees} />
@@ -227,9 +228,10 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
+
       </section>
 
-      <section className="mb-6">
+      <section className="mb-6 ">
         <ActivityFeed />
       </section>
 

@@ -11,7 +11,7 @@ import { Employee } from "@/types/entities";
 import { Line, LineChart, XAxis, YAxis, ResponsiveContainer, Tooltip as ReTooltip, Legend, PieChart, Pie, Cell, BarChart, Bar } from "recharts";
 import { Calendar, Clock, LogIn, LogOut, Mail, Briefcase } from "lucide-react";
 import AddEmployeeDialog from "@/components/employees/AddEmployeeDialog";
-
+import { useEmployees } from "../hooks/useEmployees";
 const EMPLOYEES_STORAGE_KEY = "devmanage_employees_v1";
 
 function statusClass(status: Employee["status"]) {
@@ -29,22 +29,7 @@ function statusClass(status: Employee["status"]) {
   }
 }
 
-function useEmployees() {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  useEffect(() => {
-    const raw = localStorage.getItem(EMPLOYEES_STORAGE_KEY);
-    if (!raw) return;
-    try {
-      setEmployees(JSON.parse(raw) as Employee[]);
-    } catch {}
-  }, []);
-  
-  const addEmployee = (employee: Employee) => {
-    setEmployees((prev) => [employee, ...prev]);
-  };
-  
-  return { employees, addEmployee };
-}
+
 
 interface HistoryDialogProps { employee?: Employee; open: boolean; onOpenChange: (o: boolean) => void; }
 function HistoryDialog({ employee, open, onOpenChange }: HistoryDialogProps) {
@@ -236,7 +221,7 @@ export default function Employees() {
     // Search filter
     const searchQuery = query.toLowerCase().trim();
     if (searchQuery) {
-      result = result.filter((employee) => 
+      result = result.filter((employee) =>
         employee.fullName.toLowerCase().includes(searchQuery) ||
         employee.roleTitle.toLowerCase().includes(searchQuery) ||
         employee.email.toLowerCase().includes(searchQuery)
@@ -372,7 +357,7 @@ export default function Employees() {
                       })()}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between mt-2">
                     <Button variant="secondary" size="sm" onClick={(ev) => { ev.stopPropagation(); setSelectedForHistory(e); }}>History</Button>
                   </div>

@@ -102,9 +102,9 @@ export const generateWeeklyTaskData = (projects: Project[]): WeeklyTaskData[] =>
   
   // Simulate task distribution based on project status and activity
   return days.map((day, index) => {
-    const baseCompleted = Math.floor(Math.random() * 15) + 10;
-    const baseActive = Math.floor(Math.random() * 8) + 5;
-    const baseOnHold = Math.floor(Math.random() * 3) + 1;
+    const baseCompleted = Math.floor(Math.random() * 49) + 10;
+    const baseActive = Math.floor(Math.random() * 9) + 5;
+    const baseOnHold = Math.floor(Math.random() * 31) + 1;
 
     // Weight based on actual project data
     const activeProjectsCount = projects.filter(p => 

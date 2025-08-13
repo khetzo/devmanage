@@ -17,10 +17,10 @@ export function RevenueBarChart({ projects, employees }: RevenueBarChartProps) {
         <CardTitle>Weekly Jira Task Analysis</CardTitle>
       </CardHeader>
 
-      <div className="flex flex-col md:flex-row gap-6 p-6 pt-0">
+      <div className="flex flex-col md:flex-row gap-1 p-2 pt-0">
         {/* Chart Section - Left */}
         <CardContent className="flex-1 min-h-[300px]">
-          <div className="h-full w-full">
+          <div className="h-full w-full ">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}

@@ -14,6 +14,7 @@ function formatCurrency(amount: number, currency = "MAD") {
 
 interface ClientCardProps {
   client: Client;
+  projects: Project[];
   onAddProject: (client: Client) => void;
 }
 

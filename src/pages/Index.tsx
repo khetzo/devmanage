@@ -12,7 +12,13 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { RevenueBarChart } from "@/components/dashboard/Charts/RevenueBarChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faUserPlus, faChartLine, faFolderPlus, faMoneyCheckDollar } from "@fortawesome/free-solid-svg-icons";
+
+import {
+  faPlus, faUserPlus, faRocket,
+  faCheckCircle,
+  faDollarSign,
+  faTasks, faChartLine, faFolderPlus, faMoneyCheckDollar
+} from "@fortawesome/free-solid-svg-icons";
 import { Progress } from "@/components/ui/progress";
 import CreateProjectDialog from "@/components/projects/CreateProjectDialog";
 import AddEmployeeDialog from "@/components/employees/AddEmployeeDialog";
@@ -45,14 +51,14 @@ const Index = () => {
     setOpen(false);
     reset();
   };
- useEffect(() => {
+  useEffect(() => {
     const loadProjects = () => {
       const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
       if (raw) {
         try {
           const parsed = JSON.parse(raw) as Project[];
           setProjects(parsed);
-        } catch {}
+        } catch { }
       }
     };
 
@@ -62,7 +68,7 @@ const Index = () => {
         try {
           const parsed = JSON.parse(raw) as Client[];
           setClients(parsed);
-        } catch {}
+        } catch { }
       }
     };
 
@@ -75,7 +81,7 @@ const Index = () => {
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
   }, [projects]);
 
-    const addProject = (project: Project) => {
+  const addProject = (project: Project) => {
     setProjects((prev) => [project, ...prev]);
   };
 
@@ -115,11 +121,43 @@ const Index = () => {
         </Button>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <MetricCard title="Active Relationships" value="32" change="+3 this month" />
-        <MetricCard title="Completed Projects" value="128" change="+12 this quarter" />
-        <MetricCard title="Total Earnings" value="$142,500" change="YTD" />
-        <MetricCard title="Monthly Revenue" value="$18,240" change="+8% vs last month" />
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-6">
+        <MetricCard
+          title="total client "
+          value="4"
+          change="+5 today"
+          icon={<FontAwesomeIcon icon={faTasks} className="text-purple-500" />}
+          className="w-full"
+        />
+        <MetricCard
+          title="Active Projects"
+          value="7"
+          change="Complited project: 3"
+          icon={<FontAwesomeIcon icon={faRocket} className="text-blue-500" />}
+          className="w-full"
+        />
+        <MetricCard
+          title="Total Employees"
+          value="128"
+          change="+12 External"
+          icon={<FontAwesomeIcon icon={faCheckCircle} className="text-green-500" />}
+          className="w-full"
+        />
+        <MetricCard
+          title="Total Earnings"
+          value="R142,500"
+          change="ZAR || Outstanding Balance  : R 4564,545"
+          icon={<FontAwesomeIcon icon={faDollarSign} className="text-yellow-500" />}
+          className="w-full"
+        />
+        
+        <MetricCard
+          title="Monthly Revenue"
+          value="R128,240"
+          change="+8% vs last month"
+          icon={<FontAwesomeIcon icon={faChartLine} className="text-teal-500" />}
+          className="w-full"
+        />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3 mb-6">

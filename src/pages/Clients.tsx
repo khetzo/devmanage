@@ -7,35 +7,45 @@ import AddClientDialog from "@/components/clients/AddClientDialog";
 import AddProjectDialog from "@/components/clients/AddProjectDialog";
 import { Client, Project } from "@/types/entities";
 
-const STORAGE_KEY = "devmanage_clients_v1";
+const CLIENTS_STORAGE_KEY = "devmanage_clients_v1";
+const PROJECTS_STORAGE_KEY = "devmanage_projects_v1";
 
 const Clients = () => {
   const [query, setQuery] = useState("");
   const [clients, setClients] = useState<Client[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [openAddClient, setOpenAddClient] = useState(false);
   const [projectModal, setProjectModal] = useState<{ open: boolean; client?: Client }>({ open: false });
 
-  // Load + persist to localStorage
+  // Load data from localStorage
   useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as Client[];
-        setClients(parsed);
-      } catch { }
-    }
+    const loadData = () => {
+      const clientsRaw = localStorage.getItem(CLIENTS_STORAGE_KEY);
+      const projectsRaw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+
+      if (clientsRaw) setClients(JSON.parse(clientsRaw));
+      if (projectsRaw) setProjects(JSON.parse(projectsRaw));
+    };
+    loadData();
   }, []);
 
+  // Persist data to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
-  }, [clients]);
+    localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(clients));
+    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+  }, [clients, projects]);
 
-  const addClient = (client: Client) => setClients((prev) => [client, ...prev]);
+  const addClient = (client: Client) => {
+    setClients((prev) => [client, ...prev]);
+  };
 
   const addProject = (project: Project) => {
-    setClients((prev) =>
-      prev.map((client) => (client.id === project.clientId ? { ...client, projects: [project, ...(client.projects || [])] } : client))
-    );
+    setProjects((prev) => [project, ...prev]);
+  };
+
+  // Get projects for each client
+  const getClientProjects = (clientId: string): Project[] => {
+    return projects.filter(project => project.clientId === clientId) || [];
   };
 
   const filtered = useMemo(() => {
@@ -79,7 +89,12 @@ const Clients = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filtered.map((client) => (
-              <ClientCard key={client.id} client={client} onAddProject={(selectedClient) => setProjectModal({ open: true, client: selectedClient })} />
+              <ClientCard
+                key={client.id}
+                client={client}
+                projects={getClientProjects(client.id)}
+                onAddProject={(selectedClient) => setProjectModal({ open: true, client: selectedClient })}
+              />
             ))}
           </div>
         )}
@@ -91,8 +106,8 @@ const Clients = () => {
         <AddProjectDialog
           open={projectModal.open}
           onOpenChange={(open) => setProjectModal((previousState) => ({ ...previousState, open }))}
-          clientId={projectModal.client!.id}
-          clientName={projectModal.client!.name}
+          clientId={projectModal.client.id}
+          clientName={projectModal.client.name}
           onAdd={addProject}
         />
       )}
@@ -101,4 +116,3 @@ const Clients = () => {
 };
 
 export default Clients;
-

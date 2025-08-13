@@ -22,10 +22,10 @@ import {
 import { Progress } from "@/components/ui/progress";
 import CreateProjectDialog from "@/components/projects/CreateProjectDialog";
 import AddEmployeeDialog from "@/components/employees/AddEmployeeDialog";
-import { Project, Client } from "@/types/entities";
+import { Project, Client, Employee } from "@/types/entities";
+import { loadData, saveData, STORAGE_KEYS, initializeData } from "@/lib/dataService";
+import { calculateDashboardMetrics, formatCurrency } from "@/lib/analytics";
 
-const PROJECTS_STORAGE_KEY = "devmanage_projects_v1";
-const CLIENTS_STORAGE_KEY = "devmanage_clients_v1";
 
 interface ClientForm {
   name: string;
@@ -45,50 +45,58 @@ const Index = () => {
   const [openAddEmployee, setOpenAddEmployee] = useState(false);
   const [clients, setClients] = useState<Client[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
   const onSubmit = (data: ClientForm) => {
+    const newClient: Client = {
+      id: Date.now().toString(),
+      name: data.name,
+      company: data.company,
+      email: data.email,
+      phone: data.phone,
+      city: data.city,
+      country: data.country,
+      address: data.address,
+      projects: []
+    };
+    
+    const updatedClients = [newClient, ...clients];
+    setClients(updatedClients);
+    saveData(STORAGE_KEYS.CLIENTS, updatedClients);
+    
     toast({ title: "Client added", description: `${data.name} from ${data.company}` });
     setOpen(false);
     reset();
   };
+
+  // Initialize data on mount
   useEffect(() => {
-    const loadProjects = () => {
-      const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw) as Project[];
-          setProjects(parsed);
-        } catch { }
-      }
-    };
-
-    const loadClients = () => {
-      const raw = localStorage.getItem(CLIENTS_STORAGE_KEY);
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw) as Client[];
-          setClients(parsed);
-        } catch { }
-      }
-    };
-
-    loadProjects();
-    loadClients();
+    initializeData();
+    
+    setClients(loadData<Client>(STORAGE_KEYS.CLIENTS));
+    setProjects(loadData<Project>(STORAGE_KEYS.PROJECTS));
+    setEmployees(loadData<Employee>(STORAGE_KEYS.EMPLOYEES));
   }, []);
 
-  // Save projects to localStorage
+  // Save data to localStorage when state changes
   useEffect(() => {
-    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+    if (projects.length > 0) {
+      saveData(STORAGE_KEYS.PROJECTS, projects);
+    }
   }, [projects]);
+
+  useEffect(() => {
+    if (clients.length > 0) {
+      saveData(STORAGE_KEYS.CLIENTS, clients);
+    }
+  }, [clients]);
 
   const addProject = (project: Project) => {
     setProjects((prev) => [project, ...prev]);
   };
 
-  const startedCount = projects.filter((p) => p.status === "Started (In Progress)").length;
-  const onHoldCount = projects.filter((p) => p.status === "On Hold").length;
-  const completedCount = projects.filter((p) => p.status === "Completed").length;
-  const totalCount = projects.length;
+  // Calculate real metrics from data
+  const metrics = calculateDashboardMetrics(clients, projects, employees);
 
   return (
     <>
@@ -123,38 +131,38 @@ const Index = () => {
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-6">
         <MetricCard
-          title="total client "
-          value="4"
-          change="+5 today"
+          title="Total Clients"
+          value={metrics.totalClients.toString()}
+          change="Real-time data"
           icon={<FontAwesomeIcon icon={faTasks} className="text-purple-500" />}
           className="w-full"
         />
         <MetricCard
           title="Active Projects"
-          value="7"
-          change="Complited project: 3"
+          value={metrics.activeProjects.toString()}
+          change={`Completed projects: ${metrics.completedProjects}`}
           icon={<FontAwesomeIcon icon={faRocket} className="text-blue-500" />}
           className="w-full"
         />
         <MetricCard
           title="Total Employees"
-          value="128"
-          change="+12 External"
+          value={metrics.totalEmployees.toString()}
+          change={`+${metrics.externalEmployees} External`}
           icon={<FontAwesomeIcon icon={faCheckCircle} className="text-green-500" />}
           className="w-full"
         />
         <MetricCard
           title="Total Earnings"
-          value="R142,500"
-          change="ZAR || Outstanding Balance  : R 4564,545"
+          value={formatCurrency(metrics.totalEarnings)}
+          change={`ZAR || Outstanding Balance: ${formatCurrency(metrics.outstandingBalance)}`}
           icon={<FontAwesomeIcon icon={faDollarSign} className="text-yellow-500" />}
           className="w-full"
         />
         
         <MetricCard
           title="Monthly Revenue"
-          value="R128,240"
-          change="+8% vs last month"
+          value={formatCurrency(metrics.monthlyRevenue)}
+          change="Current month"
           icon={<FontAwesomeIcon icon={faChartLine} className="text-teal-500" />}
           className="w-full"
         />
@@ -162,7 +170,7 @@ const Index = () => {
 
       <section className="grid gap-4 lg:grid-cols-3 mb-6">
         <div className="lg:col-span-2">
-          <RevenueBarChart />
+          <RevenueBarChart projects={projects} employees={employees} />
         </div>
         <Card className="hover-scale">
           <CardHeader>
@@ -172,16 +180,16 @@ const Index = () => {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <p className="text-sm text-muted-foreground">Project Completion</p>
-                <span className="text-sm">76%</span>
+                <span className="text-sm">{metrics.projectCompletion}%</span>
               </div>
-              <Progress value={76} />
+              <Progress value={metrics.projectCompletion} />
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
                 <p className="text-sm text-muted-foreground">Invoices Paid</p>
-                <span className="text-sm">64%</span>
+                <span className="text-sm">{metrics.invoicesPaid}%</span>
               </div>
-              <Progress value={64} />
+              <Progress value={metrics.invoicesPaid} />
             </div>
 
             <div className="pt-1">
@@ -192,28 +200,28 @@ const Index = () => {
                     <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-in-progress))" }} />
                     Started
                   </span>
-                  <span className="font-semibold">{startedCount}</span>
+                  <span className="font-semibold">{metrics.projectStatusCounts.started}</span>
                 </div>
                 <div className="rounded-md border p-3 flex items-center justify-between">
                   <span className="text-sm text-muted-foreground flex items-center gap-2">
                     <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-on-hold))" }} />
                     On Hold
                   </span>
-                  <span className="font-semibold">{onHoldCount}</span>
+                  <span className="font-semibold">{metrics.projectStatusCounts.onHold}</span>
                 </div>
                 <div className="rounded-md border p-3 flex items-center justify-between">
                   <span className="text-sm text-muted-foreground flex items-center gap-2">
                     <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-completed))" }} />
                     Completed
                   </span>
-                  <span className="font-semibold">{completedCount}</span>
+                  <span className="font-semibold">{metrics.projectStatusCounts.completed}</span>
                 </div>
                 <div className="rounded-md border p-3 flex items-center justify-between">
                   <span className="text-sm text-muted-foreground flex items-center gap-2">
                     <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--foreground))" }} />
                     Total Projects
                   </span>
-                  <span className="font-semibold">{totalCount}</span>
+                  <span className="font-semibold">{metrics.projectStatusCounts.total}</span>
                 </div>
               </div>
             </div>

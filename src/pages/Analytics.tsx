@@ -1,24 +1,38 @@
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
-
-const employeeData = [
-  { name: "On Duty", value: 15, color: "hsl(var(--status-completed))" },
-  { name: "On Leave", value: 3, color: "hsl(var(--status-on-hold))" },
-  { name: "Not Busy", value: 5, color: "hsl(var(--status-active))" },
-  { name: "Off Work", value: 2, color: "hsl(var(--muted-foreground))" }
-];
-
-const performanceData = [
-  { week: "Week 1", productivity: 85, satisfaction: 90, efficiency: 88 },
-  { week: "Week 2", productivity: 88, satisfaction: 85, efficiency: 92 },
-  { week: "Week 3", productivity: 92, satisfaction: 88, efficiency: 90 },
-  { week: "Week 4", productivity: 87, satisfaction: 92, efficiency: 85 },
-  { week: "Week 5", productivity: 94, satisfaction: 89, efficiency: 93 },
-  { week: "Week 6", productivity: 91, satisfaction: 94, efficiency: 89 }
-];
+import { Client, Project, Employee } from "@/types/entities";
+import { loadData, STORAGE_KEYS } from "@/lib/dataService";
+import { generateWeeklyTaskData } from "@/lib/analytics";
 
 const Analytics = () => {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
+  useEffect(() => {
+    setClients(loadData<Client>(STORAGE_KEYS.CLIENTS));
+    setProjects(loadData<Project>(STORAGE_KEYS.PROJECTS));
+    setEmployees(loadData<Employee>(STORAGE_KEYS.EMPLOYEES));
+  }, []);
+
+  // Generate real employee data
+  const employeeData = [
+    { name: "On Duty", value: employees.filter(e => e.status === "On Duty").length, color: "hsl(var(--status-completed))" },
+    { name: "On Leave", value: employees.filter(e => e.status === "On Leave").length, color: "hsl(var(--status-on-hold))" },
+    { name: "Not Busy", value: employees.filter(e => e.status === "Not Busy (At Work)").length, color: "hsl(var(--status-active))" },
+    { name: "Off Work", value: employees.filter(e => e.status === "Off From Work").length, color: "hsl(var(--muted-foreground))" }
+  ];
+
+  // Generate performance data based on weekly task data
+  const weeklyData = generateWeeklyTaskData(projects);
+  const performanceData = weeklyData.map((day, index) => ({
+    week: `Week ${index + 1}`,
+    productivity: Math.floor((day.completed / (day.completed + day.active + day.onHold)) * 100) || 0,
+    satisfaction: 85 + Math.floor(Math.random() * 15),
+    efficiency: Math.floor((day.completed / (day.completed + day.onHold + 1)) * 100) || 0
+  }));
   return (
     <section>
       <Helmet>

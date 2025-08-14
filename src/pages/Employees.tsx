@@ -266,10 +266,14 @@ export default function Employees() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="text-sm text-muted-foreground">
-            Total: {stats.total} • Active: {stats.active} • On Leave: {stats.onLeave} • Busy: {stats.busy}
+          <div className="flex flex-wrap gap-3 p-3 border-2 border-dotted border-500 rounded-lg  text-sm ">
+            Total: <span className="font-bold">{stats.total}</span> •
+            On Duty: <span className="font-bold text-green-600">{stats.active}</span> •
+            On Leave: <span className="font-bold text-amber-600">{stats.onLeave}</span> •
+            Busy: <span className="font-bold text-red-600">{stats.busy}</span>
           </div>
         </div>
+
 
         <div className="flex flex-col sm:flex-row gap-3">
           <Input

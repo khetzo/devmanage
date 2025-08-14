@@ -65,5 +65,6 @@ export interface Employee {
   completedThisMonth: number;
   onHoldThisMonth: number;
   checkIns?: CheckInRecord[];
+  projects?: Project[];
 }
 

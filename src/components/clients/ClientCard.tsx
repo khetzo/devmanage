@@ -37,13 +37,14 @@ export default function ClientCard({ client, onAddProject }: ClientCardProps) {
             )}
           </div>
         </div>
+
         <div className="flex items-center gap-2">
           <Button size="icon" variant="outline" className="h-6 w-6" onClick={() => onAddProject(client)} aria-label={`Add project for ${client.name}`}>
             <Plus className="h-3 w-3" />
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2 p-4 pt-0">
+      <CardContent className="space-y-1 p-5 pt-0">
         {client.email && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Mail className="h-3 w-3" />

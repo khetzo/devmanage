@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,9 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Employee } from "@/types/entities";
 import { Line, LineChart, XAxis, YAxis, ResponsiveContainer, Tooltip as ReTooltip, Legend, PieChart, Pie, Cell, BarChart, Bar } from "recharts";
-import { Calendar, Clock, LogIn, LogOut, Mail, Briefcase } from "lucide-react";
+import { Calendar, Clock, LogIn, LogOut, Mail, Briefcase, BrainCircuit, Building, } from "lucide-react";
 import AddEmployeeDialog from "@/components/employees/AddEmployeeDialog";
 import { useEmployees } from "../hooks/useEmployees";
+import { Project } from "@/types/entities";
 const EMPLOYEES_STORAGE_KEY = "devmanage_employees_v1";
 
 function statusClass(status: Employee["status"]) {
@@ -209,6 +210,7 @@ export default function Employees() {
   const [openAddEmployee, setOpenAddEmployee] = useState(false);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All Employees");
+  const [projects, setProjects] = useState<Project[]>([]);
 
   const filtered = useMemo(() => {
     let result = employees;
@@ -299,7 +301,9 @@ export default function Employees() {
             }
           </div>
         ) : (
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <section className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4 overflow-hidden">
+
+
             {filtered.map((e) => (
               <Card key={e.id} className="bg-card/60 hover-scale cursor-pointer max-w-sm" onClick={() => setSelectedForAnalytics(e)}>
                 <CardHeader className="pb-2 p-4">
@@ -310,60 +314,128 @@ export default function Employees() {
                       </div>
                       <div>
                         <CardTitle className="text-sm truncate">{e.fullName}</CardTitle>
-                        <p className="text-xs text-muted-foreground mt-0.5 truncate flex items-center gap-1">
-                          <Briefcase className="h-3 w-3" />{e.roleTitle}
-                        </p>
+                        {e.roleTitle && (
+
+                          <p className="flex  gap-1 text-xs text-muted-foreground ">
+                            <Briefcase className="h-3 w-3" />----</p>
+
+                        )
+                        }
                       </div>
                     </div>
-                    <Badge className={`${statusClass(e.status)} text-xs`}>{e.status}</Badge>
+                    <div className="flex items-center gap-1 min-w-0">
+                      <Badge className={`${statusClass(e.status)}  text-sm sm:text-xs truncate overflow-hidden`}>{e.status}</Badge>
+                    </div>
+
+
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="rounded-md border p-2">
-                      <p className="text-muted-foreground">Completed</p>
-                      <p className="text-lg font-semibold">{e.completedThisMonth}</p>
+                <CardContent className="space-y-0.5 p-5 pt-0">
+                  {e.roleTitle && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Briefcase className="h-3 w-3" />
+                      <span className="truncate">{e.roleTitle}</span>
                     </div>
-                    <div className="rounded-md border p-2">
-                      <p className="text-muted-foreground">On Hold</p>
-                      <p className="text-lg font-semibold">{e.onHoldThisMonth}</p>
+                  )}
+                  {e.completedThisMonth && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <BrainCircuit className="h-3 w-3" />
+                      <span className="truncate">Experians: {e.yearsExperience} yrs</span>
                     </div>
-                  </div>
-
+                  )}
+                  {e.workMode && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Building className="h-3 w-3" />
+                      <span className="truncate"> Working {e.workMode}</span>
+                    </div>
+                  )}
+                  {e.email && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Mail className="h-3 w-3" />
+                      <span className="truncate">{e.email}</span>
+                    </div>
+                  )}
                   <Separator className="my-2" />
-
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="rounded-md border p-2">
-                      <p className="text-muted-foreground">Mode</p>
-                      <p className="font-medium">{e.workMode}</p>
+                  {/* <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex rounded-md border p-2">
+                      <p className="text-muted-foreground">Mode </p>
+                      <p className="font-medium">:  {e.workMode}</p>
                     </div>
-                    <div className="rounded-md border p-2">
-                      <p className="text-muted-foreground">Experience</p>
-                      <p className="font-medium">{e.yearsExperience} yrs</p>
+                    <div className="flex  rounded-md border p-2">
+                      <p className="text-muted-foreground">Experience </p>
+                      <p className="font-medium">:  {e.yearsExperience} yrs</p>
                     </div>
-                  </div>
-
-                  <Separator className="my-2" />
-
+                  </div> */}
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-muted-foreground">Last check-in</span>
+
+                      <Button variant="secondary" className="h-6 w-15 text-muted-foreground" onClick={(ev) => { ev.stopPropagation(); setSelectedForHistory(e); }}>Check in time</Button>
+
                     </div>
                     <span className="font-medium">
                       {(() => {
                         const r = e.checkIns?.[e.checkIns.length - 1];
-                        return r ? `${new Date(r.date).toLocaleDateString()} · ${r.checkIn}` : "—";
+                        return r ? ` ${r.checkIn}` : "Apsent";
                       })()}
+
                     </span>
                   </div>
+                  <Separator className="my-2" />
 
-                  <div className="flex items-center justify-between mt-2">
-                    <Button variant="secondary" size="sm" onClick={(ev) => { ev.stopPropagation(); setSelectedForHistory(e); }}>History</Button>
-                  </div>
+
+
+                  {projects.length > 0 ? (
+                    <div className="pt-2">
+                      <div className="flex items-center gap-2 mb-2 text-xs uppercase text-muted-foreground tracking-wide">
+                        {/* <FolderKanban className="h-3 w-3" /> */}
+                        <span>Projects</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {projects.slice(0, 3).map((p) => (
+                          <Badge key={p.id} variant={p.status === "Completed" ? "secondary" : p.status === "Active" ? "default" : "outline"} className="text-xs px-2 py-1">
+                            {p.name}
+                          </Badge>
+                        ))}
+                        {projects.length > 3 && (
+                          <Badge variant="outline" className="text-xs px-2 py-1">+{projects.length - 3} more</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ) : (<div className="pt-2 space-y-2">
+                    <div className="flex items-center gap-2 mb-2 text-xs uppercase text-muted-foreground tracking-wide">
+                      <span>Projects working on</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {/* Simulate 2 badge placeholders */}
+                      {[1, 2,].map((i) => (
+                        <div
+                          key={i}
+                          className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"
+                        />
+                      ))}
+                    </div>
+                  </div>)}
+
                 </CardContent>
+                <CardFooter className="grid grid-cols-3 gap-2 p-4 pt-0">
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground">Task Asyned</div>
+                    <div className="font-semibold text-sm">{e.onHoldThisMonth + e.completedThisMonth}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground">Compleded</div>
+                    <div className="font-semibold text-primary text-sm">{e.completedThisMonth}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground">Task onhold</div>
+                    <div className="font-semibold text-sm">{e.onHoldThisMonth}</div>
+                  </div>
+                </CardFooter>
               </Card>
             ))}
+
+
           </section>
         )}
       </main>

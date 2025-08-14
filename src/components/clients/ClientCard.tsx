@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Client, Project } from "@/types/entities";
 
-function formatCurrency(amount: number, currency = "MAD") {
+function formatCurrency(amount: number, currency = "ZAR") {
   try {
     return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(amount);
   } catch {
@@ -18,8 +18,7 @@ interface ClientCardProps {
   onAddProject: (client: Client) => void;
 }
 
-export default function ClientCard({ client, onAddProject }: ClientCardProps) {
-  const projects = client.projects || [];
+export default function ClientCard({ client, onAddProject, projects = [] }: ClientCardProps) {
   const totalBudget = projects.reduce((sum, p) => sum + (p.budget || 0), 0);
   const activeCount = projects.filter((p) => p.status === "Active").length;
 

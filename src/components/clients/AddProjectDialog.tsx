@@ -94,7 +94,7 @@ export default function AddProjectDialog({ open, onOpenChange, clientId, clientN
             )}
           </div>
           <div>
-            <Label htmlFor="budget">Budget (MAD)</Label>
+            <Label htmlFor="budget">Budget (ZAR)</Label>
             <Input id="budget" type="number" step="0.01" min="0" placeholder="2000" {...form.register("budget")} />
             {form.formState.errors.budget && (
               <p className="text-destructive text-sm mt-1">{form.formState.errors.budget.message}</p>

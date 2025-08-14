@@ -341,7 +341,7 @@ export default function Employees() {
                       <span className="truncate">{e.roleTitle}</span>
                     </div>
                   )}
-                  {e.completedThisMonth && (
+                  {e.yearsExperience && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <BrainCircuit className="h-3 w-3" />
                       <span className="truncate">Experians: {e.yearsExperience} yrs</span>
@@ -374,7 +374,7 @@ export default function Employees() {
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3 text-muted-foreground" />
 
-                      <Button variant="secondary" className="h-6 w-15 text-muted-foreground" onClick={(ev) => { ev.stopPropagation(); setSelectedForHistory(e); }}>Check in time</Button>
+                      <Button variant="secondary" className="h-6 w-15 text-muted-foreground" onClick={(ev) => { ev.stopPropagation(); setSelectedForHistory(e); }}>Check in</Button>
 
                     </div>
                     <span className="font-medium">
@@ -444,7 +444,11 @@ export default function Employees() {
         )}
       </main>
 
-      <AddEmployeeDialog open={openAddEmployee} onOpenChange={setOpenAddEmployee} onAdded={addEmployee} />
+      <AddEmployeeDialog
+
+        open={openAddEmployee}
+        onOpenChange={setOpenAddEmployee}
+        onAdded={addEmployee} />
       <HistoryDialog employee={selectedForHistory} open={!!selectedForHistory} onOpenChange={(o) => !o && setSelectedForHistory(undefined)} />
       <AnalyticsDialog employee={selectedForAnalytics} open={!!selectedForAnalytics} onOpenChange={(o) => !o && setSelectedForAnalytics(undefined)} />
     </>

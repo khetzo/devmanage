@@ -52,7 +52,7 @@ const PaymentSection = ({ project, onUpdate }: PaymentSectionProps) => {
     onUpdate(updatedProject);
     toast({
       title: "Payment recorded",
-      description: `Added ${paymentAmount.toLocaleString()} MAD payment`,
+      description: `Added ${paymentAmount.toLocaleString()} ZAR payment`,
     });
 
     // Reset form
@@ -75,16 +75,16 @@ const PaymentSection = ({ project, onUpdate }: PaymentSectionProps) => {
     onUpdate(updatedProject);
     toast({
       title: "Payment removed",
-      description: `Removed ${payment.amount.toLocaleString()} MAD payment`,
+      description: `Removed ${payment.amount.toLocaleString()} ZAR payment`,
     });
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { 
-      month: "short", 
-      day: "numeric", 
-      year: "numeric" 
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
     });
   };
 
@@ -113,15 +113,15 @@ const PaymentSection = ({ project, onUpdate }: PaymentSectionProps) => {
                   <span className="text-green-600 text-sm">✓</span>
                 </div>
                 <div>
-                  <div className="font-medium">{payment.amount.toLocaleString()} MAD</div>
+                  <div className="font-medium">{payment.amount.toLocaleString()} ZAR</div>
                   <div className="text-sm text-muted-foreground">
                     📅 {formatDate(payment.date)} • {payment.method}
                   </div>
                 </div>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => deletePayment(payment.id)}
                 className="text-muted-foreground hover:text-destructive"
               >
@@ -138,10 +138,10 @@ const PaymentSection = ({ project, onUpdate }: PaymentSectionProps) => {
             <DialogTitle>Record New Payment</DialogTitle>
             <p className="text-sm text-muted-foreground">Add a payment to this project</p>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div>
-              <Label htmlFor="amount">Amount (MAD) *</Label>
+              <Label htmlFor="amount">Amount (ZAR) *</Label>
               <Input
                 id="amount"
                 type="number"

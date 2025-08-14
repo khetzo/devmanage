@@ -171,7 +171,7 @@ export default function CreateProjectDialog({ open, onOpenChange, clients, onAdd
               />
             </div>
             <div>
-              <Label htmlFor="budget">Budget (MAD) *</Label>
+              <Label htmlFor="budget">Budget (ZAR) *</Label>
               <Input
                 id="budget"
                 type="number"

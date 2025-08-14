@@ -38,19 +38,19 @@ const ProjectCard = ({ project, client, onUpdate }: ProjectCardProps) => {
 
   const paymentProgress = project.budget > 0 ? (project.totalPaid / project.budget) * 100 : 0;
   const remaining = Math.max(0, project.budget - project.totalPaid);
-  
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return "Not set";
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { 
-      month: "short", 
-      day: "numeric", 
-      year: "numeric" 
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
     });
   };
 
   const isOverdue = project.deadline && new Date(project.deadline) < new Date();
-  const daysLeft = project.deadline 
+  const daysLeft = project.deadline
     ? Math.ceil((new Date(project.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     : null;
 
@@ -84,7 +84,7 @@ const ProjectCard = ({ project, client, onUpdate }: ProjectCardProps) => {
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="space-y-1">
               <div className="text-muted-foreground">Budget</div>
-              <div className="font-medium">{project.budget.toLocaleString()} MAD</div>
+              <div className="font-medium">{project.budget.toLocaleString()} ZAR</div>
             </div>
             <div className="space-y-1">
               <div className="text-muted-foreground">Deadline</div>
@@ -107,13 +107,13 @@ const ProjectCard = ({ project, client, onUpdate }: ProjectCardProps) => {
             <div className="flex justify-between items-center text-xs">
               <span className="text-muted-foreground">Payment Progress</span>
               <span className="font-medium">
-                {project.totalPaid.toLocaleString()} / {project.budget.toLocaleString()} MAD
+                {project.totalPaid.toLocaleString()} / {project.budget.toLocaleString()} ZAR
               </span>
             </div>
             <Progress value={paymentProgress} className="h-1.5" />
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>{project.payments.length} payments</span>
-              <span>{remaining.toLocaleString()} MAD remaining</span>
+              <span>{remaining.toLocaleString()} ZAR remaining</span>
             </div>
           </div>
 

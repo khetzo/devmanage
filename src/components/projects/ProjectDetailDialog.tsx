@@ -40,19 +40,19 @@ const ProjectDetailDialog = ({ open, onOpenChange, project, client, onUpdate }: 
 
   const paymentProgress = project.budget > 0 ? (project.totalPaid / project.budget) * 100 : 0;
   const remaining = Math.max(0, project.budget - project.totalPaid);
-  
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return "Not set";
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { 
-      month: "long", 
-      day: "numeric", 
-      year: "numeric" 
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
     });
   };
 
   const isOverdue = project.deadline && new Date(project.deadline) < new Date();
-  const daysLeft = project.deadline 
+  const daysLeft = project.deadline
     ? Math.ceil((new Date(project.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     : null;
 
@@ -90,7 +90,7 @@ const ProjectDetailDialog = ({ open, onOpenChange, project, client, onUpdate }: 
           {/* Header Stats */}
           <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-muted/30 rounded-lg">
             <div className="text-center">
-              <div className="text-2xl font-bold">{project.budget.toLocaleString()} MAD</div>
+              <div className="text-2xl font-bold">{project.budget.toLocaleString()} ZAR</div>
               <div className="text-sm text-muted-foreground">Budget</div>
             </div>
             <div className="text-center">
@@ -103,9 +103,9 @@ const ProjectDetailDialog = ({ open, onOpenChange, project, client, onUpdate }: 
               )}
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{project.totalPaid.toLocaleString()} MAD</div>
+              <div className="text-2xl font-bold text-green-600">{project.totalPaid.toLocaleString()} ZAR</div>
               <div className="text-sm text-muted-foreground">Total Paid</div>
-              <div className="text-xs text-muted-foreground mt-1">{remaining.toLocaleString()} MAD remaining</div>
+              <div className="text-xs text-muted-foreground mt-1">{remaining.toLocaleString()} ZAR remaining</div>
             </div>
           </div>
 
@@ -118,7 +118,7 @@ const ProjectDetailDialog = ({ open, onOpenChange, project, client, onUpdate }: 
             <Progress value={paymentProgress} className="h-3" />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>{project.payments.length} payment{project.payments.length !== 1 ? 's' : ''}</span>
-              <span>{project.totalPaid.toLocaleString()} MAD remaining</span>
+              <span>{project.totalPaid.toLocaleString()} ZAR remaining</span>
             </div>
           </div>
 
@@ -129,16 +129,16 @@ const ProjectDetailDialog = ({ open, onOpenChange, project, client, onUpdate }: 
               <TabsTrigger value="updates" className="flex-1">Project Updates</TabsTrigger>
               <TabsTrigger value="portal" className="flex-1">Client Portal</TabsTrigger>
             </TabsList>
-            
+
             <div className="mt-4 overflow-y-auto max-h-[400px]">
               <TabsContent value="payments" className="mt-0">
                 <PaymentSection project={project} onUpdate={onUpdate} />
               </TabsContent>
-              
+
               <TabsContent value="updates" className="mt-0">
                 <ProjectUpdatesSection project={project} onUpdate={onUpdate} />
               </TabsContent>
-              
+
               <TabsContent value="portal" className="mt-0">
                 <ClientPortalSection project={project} client={client} />
               </TabsContent>

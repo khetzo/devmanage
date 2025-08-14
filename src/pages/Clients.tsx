@@ -36,7 +36,7 @@ const Clients = () => {
   }, [clients, projects]);
 
   const addClient = (client: Client) => {
-    setClients((prev) => [client, ...prev]);
+    setClients((prev) => [...prev, client,]);
   };
 
   const addProject = (project: Project) => {
@@ -87,7 +87,7 @@ const Clients = () => {
         {filtered.length === 0 ? (
           <div className="border rounded-lg p-8 text-center text-muted-foreground">No clients yet. Add your first client to get started.</div>
         ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filtered.map((client) => (
               <ClientCard
                 key={client.id}

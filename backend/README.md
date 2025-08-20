@@ -4,25 +4,25 @@ backend/
 ├── tsconfig.json                # If using TypeScript
 ├── .env                         # For DB credentials and secrets
 ├── src/
-│   ├── index.ts                 # Entry point (server setup)
-│   ├── app.ts                   # Express app configuration
-│   ├── db/
-│   │   └── pool.ts              # PostgreSQL connection pool
+│   ├── index.js                 # Entry point (server setup)
+│   ├── app.js                   # Express app configuration
+│   ├─config/
+│   │   └── database.ts            # PostgreSQL connection pool
 │   ├── routes/
-│   │   ├── clients.ts           # Client-related API routes
-│   │   ├── projects.ts          # Project-related API routes
-│   │   └── employees.ts         # Employee-related API routes
+│   │   ├── clients.js           # Client-related API routes
+│   │   ├── projects.js          # Project-related API routes
+│   │   └── employees.js         # Employee-related API routes
 │   ├── controllers/
-│   │   ├── clientsController.ts
-│   │   ├── projectsController.ts
-│   │   └── employeesController.ts
+│   │   ├── clientsController.js
+│   │   ├── projectsController.js
+│   │   └── employeesController.js
 │   ├── models/
-│   │   ├── client.ts            # Client model/schema
-│   │   ├── project.ts
-│   │   └── employee.ts
+│   │   ├── client.js            # Client model/schema
+│   │   ├── project.js
+│   │   └── employee.js
 │   ├── middleware/
-│   │   └── errorHandler.ts      # Error handling middleware
+│   │   └── errorHandler.js      # Error handling middleware
 │   └── utils/
-│       └── analytics.ts         # Analytics logic (optional)
+│       └── analytics.js         # Analytics logic (optional)
 │
 └── README.md

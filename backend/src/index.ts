@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';                     // CORS middleware to allow cross-origin requests.
 import dotenv from 'dotenv';                 // Loads environment variables from .env file.
-//import employeesRoutes from './routes/employees'; // Imports employee-related routes.
+import employeesRoutes from './routes/employees'; // Imports employee-related routes.
 
 dotenv.config();                             // Loads environment variables into process.env.
 
@@ -13,7 +13,7 @@ app.use(cors());                             // Enables CORS for all incoming re
 app.use(express.json());                     // Parses incoming JSON requests automatically.
 
 // Employee API routes
-//app.use('/api/employees', employeesRoutes);  // Mounts employee routes at /api/employees
+app.use('/api/employees', employeesRoutes);  // Mounts employee routes at /api/employees
 
 app.get('/health', (req, res) => {           // Health check endpoint.
     res.json({ status: 'Server is running' });

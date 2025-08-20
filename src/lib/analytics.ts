@@ -28,7 +28,7 @@ export interface WeeklyTaskData {
 
 export interface TaskSummary {
   critical: number;
-  weak: number;
+  onhold: number;
   active: number;
   completed: number;
 }
@@ -40,12 +40,12 @@ export const calculateDashboardMetrics = (
   employees: Employee[]
 ): DashboardMetrics => {
   // Project status counts
-  const activeProjects = projects.filter(p => 
+  const activeProjects = projects.filter(p =>
     p.status === "Active" || p.status === "Started (In Progress)"
   ).length;
-  
+
   const completedProjects = projects.filter(p => p.status === "Completed").length;
-  
+
   const startedProjects = projects.filter(p => p.status === "Started (In Progress)").length;
   const onHoldProjects = projects.filter(p => p.status === "On Hold").length;
 
@@ -57,7 +57,7 @@ export const calculateDashboardMetrics = (
   // Monthly revenue (payments from current month)
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
-  
+
   const monthlyRevenue = projects.reduce((sum, project) => {
     const monthlyPayments = project.payments.filter(payment => {
       const paymentDate = new Date(payment.date);
@@ -99,15 +99,15 @@ export const calculateDashboardMetrics = (
 // Generate weekly task analysis based on project data
 export const generateWeeklyTaskData = (projects: Project[]): WeeklyTaskData[] => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  
+
   // Simulate task distribution based on project status and activity
   return days.map((day, index) => {
-    const baseCompleted = Math.floor(Math.random() * 49) + 10;
-    const baseActive = Math.floor(Math.random() * 9) + 5;
-    const baseOnHold = Math.floor(Math.random() * 31) + 1;
+    const baseCompleted = Math.floor(Math.random() * 20) + 10;
+    const baseActive = Math.floor(Math.random() * 40) + 5;
+    const baseOnHold = Math.floor(Math.random() * 61) + 1;
 
     // Weight based on actual project data
-    const activeProjectsCount = projects.filter(p => 
+    const activeProjectsCount = projects.filter(p =>
       p.status === "Active" || p.status === "Started (In Progress)"
     ).length;
     const completedProjectsCount = projects.filter(p => p.status === "Completed").length;
@@ -133,15 +133,15 @@ export const generateTaskSummary = (projects: Project[], employees: Employee[]):
     return new Date(p.deadline) < new Date() && p.status !== "Completed";
   }).length;
 
-  const weakProjects = projects.filter(p => p.status === "On Hold").length;
-  const activeProjects = projects.filter(p => 
+  const onhold = projects.filter(p => p.status === "On Hold").length;
+  const activeProjects = projects.filter(p =>
     p.status === "Active" || p.status === "Started (In Progress)"
   ).length;
   const completedProjects = projects.filter(p => p.status === "Completed").length;
 
   return {
     critical: overduePlayers,
-    weak: weakProjects,
+    onhold: onhold,
     active: activeProjects,
     completed: completedProjects
   };

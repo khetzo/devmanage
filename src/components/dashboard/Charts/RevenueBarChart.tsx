@@ -19,15 +19,15 @@ export function RevenueBarChart({ projects, employees }: RevenueBarChartProps) {
 
       <div className="flex flex-col md:flex-row gap-1 p-2 pt-0">
         {/* Chart Section - Left */}
-        <CardContent className="flex-1 min-h-[300px]">
+        <CardContent className="flex-1 min-h-[100px] w-[100px]">
           <div className="h-full w-full ">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={data}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 0, right: 0, left: -69, bottom: -10 }}
                 layout="vertical"  // Makes bars horizontal
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid strokeDasharray="8 7" vertical={false} />
                 <XAxis
                   type="number"
                   domain={[0, 100]}
@@ -44,7 +44,7 @@ export function RevenueBarChart({ projects, employees }: RevenueBarChartProps) {
                   formatter={(value) => [`${value}%`]}
                   labelFormatter={(label) => `Category: ${label}`}
                 />
-                <Legend />
+
                 <Bar
                   dataKey="completed"
                   name="Completed"
@@ -52,12 +52,12 @@ export function RevenueBarChart({ projects, employees }: RevenueBarChartProps) {
                   radius={[0, 4, 4, 0]}
                   stackId="a"
                 />
+
                 <Bar
                   dataKey="active"
                   name="Active"
                   fill="#3B82F6"
-                  stackId="a"
-                />
+                  stackId="e" />
                 <Bar
                   dataKey="onHold"
                   name="On Hold"
@@ -66,14 +66,15 @@ export function RevenueBarChart({ projects, employees }: RevenueBarChartProps) {
                   stackId="a"
                 />
               </BarChart>
+
             </ResponsiveContainer>
           </div>
         </CardContent>
 
         {/* Task Summary - Right */}
-        <CardContent className="w-full md:w-[240px] border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
-          <h3 className="text-sm font-semibold mb-4">Task Summary for this week</h3>
-          <ul className="space-y-3">
+        <CardContent className="w-full sm:w-[150px] border-t md:border-t-0 md:border-l pt-2 md:pt-0 md:pl-2">
+          <h3 className="text-sm font-semibold mb-4">Task Summary </h3>
+          <ul className="space-y-1">
             <li className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
               <span className="w-3 h-3 rounded-full bg-red-500"></span>
               <div>
@@ -84,8 +85,8 @@ export function RevenueBarChart({ projects, employees }: RevenueBarChartProps) {
             <li className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
               <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
               <div>
-                <p className="text-sm font-medium">Weak</p>
-                <p className="text-xs text-muted-foreground">{taskSummary.weak} low priority tasks</p>
+                <p className="text-sm font-medium">Onhold</p>
+                <p className="text-xs text-muted-foreground">{taskSummary.onhold} low priority tasks</p>
               </div>
             </li>
             <li className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">

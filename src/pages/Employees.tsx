@@ -72,7 +72,7 @@ function HistoryDialog({ employee, open, onOpenChange }: HistoryDialogProps) {
 
           {/* Timeline */}
           <div className="relative pl-6">
-            <div className="absolute left-2 top-0 bottom-0 w-px bg-border" aria-hidden />
+            <div className="absolute left-2 top-0 bottom-0  bg-border" aria-hidden />
             {employee?.checkIns && employee.checkIns.length > 0 ? (
               employee.checkIns.map((rec) => (
                 <div key={rec.date} className="relative mb-4">
@@ -305,7 +305,7 @@ export default function Employees() {
             }
           </div>
         ) : (
-          <section className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4 overflow-hidden">
+          <section className="grid grid-cols-1 md:grid-cols-2 md:grid-cols-3 gap-3 overflow-hidden">
 
 
             {filtered.map((e) => (

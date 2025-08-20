@@ -106,12 +106,12 @@ const Index = () => {
         <link rel="canonical" href="/" />
       </Helmet>
 
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+      <header className="mb-2 mt-0">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground mt-1">Your project and client management hub</p>
       </header>
 
-      <section aria-label="Quick actions" className="mb-6 grid gap-3 sm:flex">
+      <section aria-label="Quick actions" className="mb-3 grid gap-3 sm:flex">
         <Button className="hover-scale" onClick={() => setOpen(true)}>
           <FontAwesomeIcon icon={faPlus} className="mr-2 h-4 w-4" /> Add Client
         </Button>
@@ -129,7 +129,7 @@ const Index = () => {
         </Button>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-6">
+      <section className="grid gap-2 sm:grid-cols-2 md:grid-cols-5 mb-2">
         <MetricCard
           title="Total Clients"
           value={metrics.totalClients.toString()}
@@ -169,68 +169,75 @@ const Index = () => {
       </section>
 
       {/* Quick Insights and Weekly Jira Task Analysis//RevenueBarChart  */}
-      <section className="grid gap-4 lg:grid-cols-3 mb-6">
-        <div className="lg:col-span-2">
+
+      <section className="flex flex-col lg:flex-row gap-4 w-full">
+        {/* Chart Section - Takes remaining space */}
+        <div className="flex-1 min-w-0  overflow-hidden">
           <RevenueBarChart projects={projects} employees={employees} />
         </div>
-        <Card className="hover-scale">
-          <CardHeader>
-            <CardTitle>Quick Insights</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-muted-foreground">Project Completion</p>
-                <span className="text-sm">{metrics.projectCompletion}%</span>
-              </div>
-              <Progress value={metrics.projectCompletion} />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-muted-foreground">Invoices Paid</p>
-                <span className="text-sm">{metrics.invoicesPaid}%</span>
-              </div>
-              <Progress value={metrics.invoicesPaid} />
-            </div>
 
-            <div className="pt-1">
-              <p className="text-sm font-medium mb-2">Project Status</p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-md border p-3 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-in-progress))" }} />
-                    Started
-                  </span>
-                  <span className="font-semibold">{metrics.projectStatusCounts.started}</span>
+        {/* Insights Card - Fixed width on desktop, full-width on mobile */}
+        <div className="lg:w-[350px] w-full flex-shrink-0">
+          <Card className="hover-scale h-full">
+            <CardHeader>
+              <CardTitle>Quick Insights</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Progress Bars (unchanged) */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm text-muted-foreground">Project Completion</p>
+                  <span className="text-sm">{metrics.projectCompletion}%</span>
                 </div>
-                <div className="rounded-md border p-3 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-on-hold))" }} />
-                    On Hold
-                  </span>
-                  <span className="font-semibold">{metrics.projectStatusCounts.onHold}</span>
+                <Progress value={metrics.projectCompletion} />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm text-muted-foreground">Invoices Paid</p>
+                  <span className="text-sm">{metrics.invoicesPaid}%</span>
                 </div>
-                <div className="rounded-md border p-3 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-completed))" }} />
-                    Completed
-                  </span>
-                  <span className="font-semibold">{metrics.projectStatusCounts.completed}</span>
-                </div>
-                <div className="rounded-md border p-3 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--foreground))" }} />
-                    Total Projects
-                  </span>
-                  <span className="font-semibold">{metrics.projectStatusCounts.total}</span>
+                <Progress value={metrics.invoicesPaid} />
+              </div>
+
+              {/* Project Status Grid - Now responsive */}
+              <div className="pt-1">
+                <p className="text-sm font-medium mb-2">Project Status</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3">
+                  {/* Status items (unchanged) */}
+                  <div className="rounded-md border p-3 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-in-progress))" }} />
+                      Started
+                    </span>
+                    <span className="font-semibold">{metrics.projectStatusCounts.started}</span>
+                  </div>
+                  <div className="rounded-md border p-3 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-on-hold))" }} />
+                      On Hold
+                    </span>
+                    <span className="font-semibold">{metrics.projectStatusCounts.onHold}</span>
+                  </div>
+                  <div className="rounded-md border p-3 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--status-completed))" }} />
+                      Completed
+                    </span>
+                    <span className="font-semibold">{metrics.projectStatusCounts.completed}</span>
+                  </div>
+                  <div className="rounded-md border p-3 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="inline-block size-2 rounded-full" style={{ backgroundColor: "hsl(var(--foreground))" }} />
+                      Total Projects
+                    </span>
+                    <span className="font-semibold">{metrics.projectStatusCounts.total}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
+            </CardContent>
+          </Card>
+        </div>
       </section>
-
       <section className="mb-6 ">
         <ActivityFeed />
       </section>

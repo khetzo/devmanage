@@ -87,7 +87,7 @@ const Clients = () => {
         {filtered.length === 0 ? (
           <div className="border rounded-lg p-8 text-center text-muted-foreground">No clients yet. Add your first client to get started.</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 md:grid-cols-3 gap-3">
             {filtered.map((client) => (
               <ClientCard
                 key={client.id}

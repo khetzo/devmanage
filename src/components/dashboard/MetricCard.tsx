@@ -12,8 +12,8 @@ interface MetricCardProps {
 
 export const MetricCard = ({ title, value, change, icon, className }: MetricCardProps) => {
   return (
-    <Card className={cn("p-4", className)}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <Card className={cn("p-1", className)}>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
         {icon}
       </CardHeader>

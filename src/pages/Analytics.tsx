@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, BarChart, Bar } from "recharts";
 import { Client, Project, Employee } from "@/types/entities";
 import { loadData, STORAGE_KEYS } from "@/lib/dataService";
 import { generateWeeklyTaskData } from "@/lib/analytics";
+import { calculateDashboardMetrics } from "@/lib/analytics";
 
 const Analytics = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -47,6 +48,72 @@ const Analytics = () => {
       </header>
 
       <main className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Project Status Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="h-80">
+                <h3 className="text-lg font-medium mb-4">Projects by Status (Pie)</h3>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      dataKey="value"
+                      data={(() => {
+                        const metrics = calculateDashboardMetrics(clients, projects, employees);
+                        return [
+                          { name: "Active", value: metrics.projectStatusCounts.total - (metrics.projectStatusCounts.onHold + metrics.projectStatusCounts.completed), color: "hsl(var(--status-active))" },
+                          { name: "On Hold", value: metrics.projectStatusCounts.onHold, color: "hsl(var(--status-on-hold))" },
+                          { name: "Completed", value: metrics.projectStatusCounts.completed, color: "hsl(var(--status-completed))" }
+                        ];
+                      })()}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      innerRadius={50}
+                      paddingAngle={4}
+                    >
+                      {(() => {
+                        const metrics = calculateDashboardMetrics(clients, projects, employees);
+                        const data = [
+                          { name: "Active", value: metrics.projectStatusCounts.total - (metrics.projectStatusCounts.onHold + metrics.projectStatusCounts.completed), color: "hsl(var(--status-active))" },
+                          { name: "On Hold", value: metrics.projectStatusCounts.onHold, color: "hsl(var(--status-on-hold))" },
+                          { name: "Completed", value: metrics.projectStatusCounts.completed, color: "hsl(var(--status-completed))" }
+                        ];
+                        return data.map((entry, index) => <Cell key={`cell-project-${index}`} fill={entry.color} />);
+                      })()}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="h-80">
+                <h3 className="text-lg font-medium mb-4">Projects by Status (Bar)</h3>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={(() => {
+                      const metrics = calculateDashboardMetrics(clients, projects, employees);
+                      return [
+                        { status: "Active", count: metrics.projectStatusCounts.total - (metrics.projectStatusCounts.onHold + metrics.projectStatusCounts.completed) },
+                        { status: "On Hold", count: metrics.projectStatusCounts.onHold },
+                        { status: "Completed", count: metrics.projectStatusCounts.completed }
+                      ];
+                    })()}
+                  >
+                    <XAxis dataKey="status" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="count" fill="hsl(var(--primary))" name="Projects" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle>Employee Analysis</CardTitle>
